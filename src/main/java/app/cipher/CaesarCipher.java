@@ -4,28 +4,22 @@ import static main.java.app.cipher.Alphabet.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class CaesarCipher {
 
-    // Encrypt with known shift
-    public static String encrypt(String text, int shift) {
-        return process(text, shift);
-    }
-
-
-    // Decrypt with known shift
-    public static String decrypt(String text, int shift) {
-        return process(text, -shift);
-    }
-
-    // Decrypt without shift (brute-force)
     public static List<String> bruteForceDecrypt(String text) {
         List<String> results = new ArrayList<>();
-        // 33 points in russian alphabet > english alphabet
         for (int shift = 1; shift <= RUSSIAN_LENGTH; shift++) {
             results.add(String.format("Shift %2d: %s", shift, decrypt(text, shift)));
         }
         return results;
+    }
+
+    public static String encrypt(String text, int shift) {
+        return process(text, shift);
+    }
+
+    public static String decrypt(String text, int shift) {
+        return process(text, -shift);
     }
 
     private static String process(String text, int shift) {

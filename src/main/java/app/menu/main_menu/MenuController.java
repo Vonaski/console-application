@@ -13,33 +13,48 @@ public class MenuController {
         System.out.println("--- Java Console Application ---");
 
         while (true) {
-            System.out.println("\nSelect operation:");
-            System.out.println("1. Caesar Cipher");
-            System.out.println("2. Arithmetic Calculator");
-            System.out.println("3. Exit");
-            System.out.print("> ");
+            showOperations();
 
-            int choice;
-            try {
-                choice = Integer.parseInt(scanner.nextLine());
-            } catch (NumberFormatException e) {
-                System.out.println("Error: Please enter a number between 1-3");
-                continue;
-            }
+            Integer choice = getChoice(scanner);
+            if (choice == null) continue;
 
-            switch (choice) {
-                case 1:
-                    cipher.handle(); // Caesar Cipher
-                    break;
-                case 2:
-                    arithmetic.handle(); // Arithmetic Calculator
-                    break;
-                case 3:
-                    System.out.println("Exiting program..."); // Exit
-                    return;
-                default:
-                    System.out.println("Error: Invalid choice");
-            }
+            if (chooseAction(choice, cipher, arithmetic)) return;
         }
+    }
+
+    private static void showOperations() {
+        System.out.println("\nSelect operation:");
+        System.out.println("1. Caesar Cipher");
+        System.out.println("2. Arithmetic Calculator");
+        System.out.println("3. Exit");
+        System.out.print("> ");
+    }
+
+    private static Integer getChoice(Scanner scanner) {
+        int choice;
+        try {
+            choice = Integer.parseInt(scanner.nextLine());
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Please enter a number between 1-3");
+            return null;
+        }
+        return choice;
+    }
+
+    private static boolean chooseAction(Integer choice, BaseHandler cipher, BaseHandler arithmetic) {
+        switch (choice) {
+            case 1:
+                cipher.handle();
+                break;
+            case 2:
+                arithmetic.handle();
+                break;
+            case 3:
+                System.out.println("Exiting program...");
+                return true;
+            default:
+                System.out.println("Error: Invalid choice");
+        }
+        return false;
     }
 }

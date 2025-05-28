@@ -13,58 +13,92 @@ public class ArithmeticHandler extends BaseHandler {
 
     @Override
     public void handle() {
-        System.out.println("\nInput method:");
-        System.out.println("1. From console");
-        System.out.println("2. From file");
-        System.out.print("> ");
+        showInputMethodDialog();
 
-        int inputType;
-        try {
-            inputType = Integer.parseInt(scanner.nextLine());
-            if (inputType != 1 && inputType != 2) {
-                System.out.println("Error: Choose 1 or 2");
-                return;
-            }
-        } catch (NumberFormatException e) {
-            System.out.println("Error: Input must be a number");
-            return;
-        }
+        Integer inputType = getInputType();
+        if (inputType == null) return;
 
         String expression;
         if (inputType == 1) {
-            System.out.print("Enter expression: ");
-            expression = scanner.nextLine();
+            expression = getExpressionFromConsole();
         } else {
-            System.out.print("Enter file path: ");
-            String filePath = scanner.nextLine();
-            try {
-                expression = FileUtils.readFromFile(filePath);
-            } catch (IOException e) {
-                System.out.println("Error reading file: " + e.getMessage());
-                return;
-            }
+            expression = getExpressionFromFile();
+            if (expression == null) return;
         }
 
         try {
-            double result = ArithmeticEvaluator.evaluate(expression.trim());
-            System.out.println("Result: " + result);
+            double result = evaluateExpression(expression);
 
-            System.out.print("Save result to file? (y/n): ");
-            String saveChoice = scanner.nextLine();
-            if (saveChoice.equalsIgnoreCase("y")) {
-                System.out.print("Enter save path: ");
-                String savePath = scanner.nextLine();
-                try {
-                    FileUtils.writeToFile(savePath, String.valueOf(result));
-                    System.out.println("File saved successfully");
-                } catch (IOException e) {
-                    System.out.println("Error saving file: " + e.getMessage());
-                }
-            }
+            showConfirmationDialog(result);
         } catch (ArithmeticException e) {
             System.out.println("Error: " + e.getMessage());
         } catch (Exception e) {
             System.out.println("Error: Invalid expression syntax");
         }
     }
+
+    private static void showInputMethodDialog() {
+        System.out.println("\nInput method:");
+        System.out.println("1. From console");
+        System.out.println("2. From file");
+        System.out.print("> ");
+    }
+
+    private Integer getInputType() {
+        int inputType;
+        try {
+            inputType = Integer.parseInt(scanner.nextLine());
+            if (inputType != 1 && inputType != 2) {
+                System.out.println("Error: Choose 1 or 2");
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Error: Input must be a number");
+            return null;
+        }
+        return inputType;
+    }
+
+    private String getExpressionFromConsole() {
+        String expression;
+        System.out.print("Enter expression: ");
+        expression = scanner.nextLine();
+        return expression;
+    }
+
+    private String getExpressionFromFile() {
+        String expression;
+        System.out.print("Enter file path: ");
+        String filePath = scanner.nextLine();
+        try {
+            expression = FileUtils.readFromFile(filePath);
+        } catch (IOException e) {
+            System.out.println("Error reading file: " + e.getMessage());
+            return null;
+        }
+        return expression;
+    }
+
+    private static double evaluateExpression(String expression) {
+        double result = ArithmeticEvaluator.evaluate(expression.trim());
+        System.out.println("Result: " + result);
+        return result;
+    }
+
+    private void showConfirmationDialog(double result) {
+        System.out.print("Save result to file? (y/n): ");
+        String saveChoice = scanner.nextLine();
+        if (saveChoice.equalsIgnoreCase("y")) {
+            System.out.print("Enter save path: ");
+            String savePath = scanner.nextLine();
+            try {
+                FileUtils.writeToFile(savePath, String.valueOf(result));
+                System.out.println("File saved successfully");
+            } catch (IOException e) {
+                System.out.println("Error saving file: " + e.getMessage());
+            }
+        }
+    }
+
+
 }
