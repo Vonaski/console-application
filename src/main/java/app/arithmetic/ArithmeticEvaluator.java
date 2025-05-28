@@ -29,7 +29,7 @@ public class ArithmeticEvaluator {
             } else if (isOperator(c)) {
                 handleValidOperator(expression, c, i, numbers, operators);
             } else {
-                handleNegativeInsidePrecedence(expression, c, i, numbers);
+                handleNegativeInsideParenthesis(expression, c, i, numbers);
             }
         }
 
@@ -57,7 +57,7 @@ public class ArithmeticEvaluator {
         operators.push(c);
     }
 
-    private static void handleNegativeInsidePrecedence(String expression, char c, int i, Stack<Double> numbers) {
+    private static void handleNegativeInsideParenthesis(String expression, char c, int i, Stack<Double> numbers) {
         StringBuilder sb = new StringBuilder();
         if (c == MINUS && (i == 0 || isOperator(expression.charAt(i - 1)) || expression.charAt(i - 1) == LEFT_PARENTHESIS)) {
             sb.append(c);
